@@ -28,10 +28,11 @@ import static java.lang.String.format;
  * sun.misc.Unsafe.getLong(long), sun.misc.Unsafe.putLong(long, long)
  */
 public class LongLongMap {
+    // Размер данных полей не зависит от числа элементов, поэтому храним их в полях класса. 
     private final static long MIN_MAP_SIZE = 8L;
     private final static long LONG_SIZE = 8L;
     private final Unsafe unsafe;
-    private final long address;
+    private final long address; 
     private final long size;
     private final long capacity;
 
