@@ -17,14 +17,16 @@ import static java.lang.String.format;
  *  2. В тексте задания нет никаких требований касательно работы класса в многопоточном режиме (более того,
  *  в задании указано, что методов sun.misc.Unsafe.getLong(long) и sun.misc.Unsafe.putLong(long, long))
  *  достаточно для выполнения задания. Соответственно, в текущей реализации данный класс не является потокобезопасным.
- *  
- *  3. По причине отсутствия технической возможности протестировать класс на ~100Gb выделенной памяти класс протестирован на ~10Gb выделенной памяти.
+ *
+ *  3. По причине отсутствия технической возможности протестировать класс на ~100Gb выделенной памяти класс протестирован
+ *  на ~10Gb выделенной памяти.
  */
 
 /**
  * Требуется написать LongLongMap который по произвольному long ключу хранить произвольное long значение
- * Важно: все данные (в том числе дополнительные, если их размер зависит от числа элементов) требуется хранить в выделенном заранее блоке в разделяемой памяти, адрес и размер которого передается в конструкторе
- * для доступа к памяти напрямую необходимо (и достаточно) использовать следующие два метода:
+ * Важно: все данные (в том числе дополнительные, если их размер зависит от числа элементов) требуется хранить
+ * в выделенном заранее блоке в разделяемой памяти, адрес и размер которого передается в конструкторе для доступа к
+ * памяти напрямую необходимо (и достаточно) использовать следующие два метода:
  * sun.misc.Unsafe.getLong(long), sun.misc.Unsafe.putLong(long, long)
  */
 public class LongLongMap {
@@ -32,8 +34,7 @@ public class LongLongMap {
     private final static long MIN_MAP_SIZE = 8L;
     private final static long LONG_SIZE = 8L;
     private final Unsafe unsafe;
-    private final long address; 
-    private final long size;
+    private final long address;
     private final long capacity;
 
     /**
@@ -50,7 +51,6 @@ public class LongLongMap {
         }
         this.unsafe = Objects.requireNonNull(unsafe);
         this.address = address;
-        this.size = size;
         this.capacity = size / LONG_SIZE;
     }
 
@@ -94,7 +94,17 @@ public class LongLongMap {
      * @return индекс ключа в хэш таблице
      */
     private long getKeyIndex(long k) {
-        return Math.abs(k) % capacity;
+        return Math.abs(hash(k)) % capacity;
+    }
+
+    /**
+     * Получение хэша для произвольного ключа
+     *
+     * @param k произвольный ключ
+     * @return хэша для произвольного ключа
+     */
+    public long hash(long k) {
+        long h; return (h = k) ^ h >>> 32;
     }
 
     /**
